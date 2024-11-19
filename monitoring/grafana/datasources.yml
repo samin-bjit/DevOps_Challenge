@@ -1,0 +1,27 @@
+# monitoring/grafana/datasources.yml
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: false
+    version: 1
+    jsonData:
+      timeInterval: "15s"
+      queryTimeout: "60s"
+      httpMethod: POST
+
+  - name: MySQL
+    type: mysql
+    url: mysql-master:3306
+    database: lampapp
+    user: grafana
+    secureJsonData:
+      password: grafana_password
+    jsonData:
+      maxOpenConns: 100
+      maxIdleConns: 100
+      connMaxLifetime: 14400s
