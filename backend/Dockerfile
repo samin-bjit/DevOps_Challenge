@@ -14,8 +14,9 @@ COPY . .
 RUN composer install
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www
-RUN chmod -R 755 /var/www/storage
+RUN chown -R www-data:www-data /var/www && chmod -R 755 /var/www/storage
+RUN cp .env.example .env
+RUN php artisan key:generate && php artisan jwt:secret
 
 EXPOSE 8000
 CMD ["php", "artisan", "serve", "--host=0.0.0.0"]
