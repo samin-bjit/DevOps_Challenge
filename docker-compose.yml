@@ -46,19 +46,21 @@ services:
   #   networks:
   #     - app-network
 
-  # mysql-master:
-  #   build:
-  #     context: ./mysql
-  #     dockerfile: Dockerfile
-  #   environment:
-  #     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-  #     - MYSQL_DATABASE=lampapp
-  #     - MYSQL_USER=${MYSQL_USER}
-  #     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-  #   volumes:
-  #     - mysql_master_data:/var/lib/mysql
-  #   networks:
-  #     - app-network
+  mysql-master:
+    build:
+      context: ./mysql
+      dockerfile: Dockerfile
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_master_data:/var/lib/mysql
+    networks:
+      - app-network
 
   # mysql-slave:
   #   build:
