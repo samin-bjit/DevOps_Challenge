@@ -1,6 +1,22 @@
 version: '3.8'
 
 services:
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - frontend
+      - backend
+    volumes:
+      - ./nginx/logs:/var/log/nginx
+    container_name: app-nginx
+    # networks:
+    #   - app-network
+    
   frontend:
     build:
       context: ./frontend
@@ -71,6 +87,30 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+
+  # mysql-slave:
+  #   build:
+  #     context: ./mysql
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+  #     - MYSQL_DATABASE=lampapp
+  #     - MYSQL_USER=${MYSQL_USER}
+  #     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+  #     - MYSQL_REPLICATION_MODE=slave
+  #     - MYSQL_MASTER_HOST=mysql-master
+  #   depends_on:
+  #     - mysql-master
+  #   networks:
+  #     - app-network
+
+  # redis:
+  #   image: redis:6.2-alpine
+  #   command: redis-server --requirepass ${REDIS_PASSWORD}
+  #   volumes:
+  #     - redis_data:/data
+  #   networks:
+  #     - app-network
 
 # networks:
 #   app-network:
