@@ -21,11 +21,14 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      target: production  # Specify the target stage
+      cache_from:
+        - node:18-alpine
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=${NODE_ENV}
       - REACT_APP_API_HOST=${REACT_APP_API_HOST}
     ports:
-      - "3000:3000"
+      - "3000:80"
     # networks:
     #   - app-network
     container_name: app-frontend

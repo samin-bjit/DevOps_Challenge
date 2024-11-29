@@ -1,20 +1,35 @@
-# frontend/Dockerfile
-FROM node:16-alpine
+# Build stage
+FROM node:18-alpine AS builder
 
-# Set working directory
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Ensure npm is up to date and install dependencies
+RUN npm install -g npm@latest && \
+    npm install
 
 # Copy project files
 COPY . .
 
-# Build app
+# Build the project
 RUN npm run build
 
+# Production stage with Nginx
+FROM nginx:alpine AS production
+
+# Remove default nginx static files
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy built files from builder stage
+COPY --from=builder /app/build /usr/share/nginx/html
+
+# Optional: Copy custom nginx configuration if needed
+# COPY nginx.conf /etc/nginx/nginx.conf
+
+# Expose port 80 (default for nginx)
 EXPOSE 3000
-CMD ["npm", "start"]
+
+# Nginx will start automatically, no need for CMD
+CMD [ "nginx", "-g", "daemon off;" ]
